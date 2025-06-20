@@ -3,9 +3,11 @@ CREATE TABLE "Employee" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "active" BOOLEAN NOT NULL DEFAULT true,
+    "password" TEXT,
+    "active" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "activationToken" TEXT,
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
 );
@@ -67,6 +69,9 @@ CREATE TABLE "_TaskEmployees" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Employee_activationToken_key" ON "Employee"("activationToken");
 
 -- CreateIndex
 CREATE INDEX "_ProjectEmployees_B_index" ON "_ProjectEmployees"("B");

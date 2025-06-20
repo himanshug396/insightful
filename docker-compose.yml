@@ -20,9 +20,6 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    volumes:
-      - ./apps/backend:/app
-      - /app/node_modules
     command: npm run start:dev
 
 volumes:
