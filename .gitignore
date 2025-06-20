@@ -147,3 +147,4 @@ dist
 
 #!.yarn/cache
 .pnp.*
+node_modules
