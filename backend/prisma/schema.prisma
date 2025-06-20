@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects  Project[] @relation("ProjectEmployees")
+  tasks     Task[]    @relation("TaskEmployees")
+  times     TimeLog[]
+  screenshots Screenshot[]
+}
+
+model Project {
+  id        String     @id @default(uuid())
+  name      String
+  employees Employee[] @relation("ProjectEmployees")
+  tasks     Task[]
+}
+
+model Task {
+  id        String     @id @default(uuid())
+  name      String
+  project   Project    @relation(fields: [projectId], references: [id])
+  projectId String
+  employees Employee[] @relation("TaskEmployees")
+  times     TimeLog[]
+}
+
+model TimeLog {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+  task       Task     @relation(fields: [taskId], references: [id])
+  taskId     String
+  startTime  DateTime
+  endTime    DateTime?
+}
+
+model Screenshot {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+  takenAt    DateTime
+  imageUrl   String
+  permission Boolean
+}
