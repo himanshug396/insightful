@@ -14,4 +14,28 @@ COPY . .
 
 # Expose port and run
 EXPOSE 3000
-CMD ["npm", "start:dev"]
+CMD ["npm run start:dev"]
+
+
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install Nest CLI globally
+RUN npm install -g @nestjs/cli
+
+# Copy app dependencies and install them
+COPY package.json ./
+RUN npm install --frozen-lockfile
+
+# Copy the rest of your app
+COPY . .
+
+# Expose the port
+EXPOSE 3000
+
+# Run the app with Nest CLI
+CMD ["npm run start:dev"]
+# CMD ["nest", "start", "--watch"]
+

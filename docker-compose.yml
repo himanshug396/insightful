@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -24,7 +22,8 @@ services:
       - db
     volumes:
       - ./apps/backend:/app
-    command: yarn start:dev
+      - /app/node_modules
+    command: npm run start:dev
 
 volumes:
   db_data:
