@@ -7,9 +7,18 @@ import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
 import { TimeModule } from './time/time.module';
 import { ScreenshotModule } from './screenshot/screenshot.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule, EmployeeModule, ProjectModule, TaskModule, TimeModule, ScreenshotModule],
+  imports: [
+    AuthModule,
+    EmployeeModule,
+    ProjectModule,
+    TaskModule,
+    TimeModule,
+    ScreenshotModule,
+    PrismaModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
