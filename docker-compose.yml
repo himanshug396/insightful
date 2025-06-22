@@ -1,5 +1,5 @@
 services:
-  db:
+  postgres:
     image: postgres:15
     restart: always
     environment:
@@ -19,7 +19,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - postgres
     command: npm run start:dev
 
 volumes:
