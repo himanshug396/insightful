@@ -1,15 +1,25 @@
+'use client';
+import { useSearchParams } from 'next/navigation';
+import { CreateAccountForm } from './components/CreateAccountForm';
+import { LoginAndDownload } from './components/LoginAndDownload';
+
 export default function Home() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">Welcome to Insightful MVP</h1>
-        <p className="mt-2 text-gray-600">Click below to download the desktop app</p>
-        <a
-          href="/download/Insightful-Client.dmg"
-          className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Download Desktop App
-        </a>
+    <main className="flex min-h-screen items-center justify-center p-4">
+      <div className="max-w-md w-full text-center">
+        <h1 className="text-2xl font-bold mb-4">🎉 Congratulations!</h1>
+        <p className="mb-6 text-gray-600">
+          You&apos;ve been invited to join Mercor as a contractor.
+        </p>
+
+        {token ? (
+          <CreateAccountForm token={token} />
+        ) : (
+          <LoginAndDownload />
+        )}
       </div>
     </main>
   );
