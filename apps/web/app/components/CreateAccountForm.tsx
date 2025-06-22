@@ -23,7 +23,7 @@ export function CreateAccountForm({ token }: { token: string }) {
 
       // Auto-download desktop app
       window.location.href = `/${DESKTOP_APP_URL}`;
-      window.location.href = `/`;
+      // window.location.href = `/`;
     } catch {
       setError('Something went wrong');
     } finally {

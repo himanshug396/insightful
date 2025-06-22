@@ -4,7 +4,7 @@ import { apiService } from '../services/api';
 
 export const useTimer = () => {
   const [timer, setTimer] = useState<Timer>({
-    projectId: null,
+    taskId: null,
     isRunning: false,
     startTime: null,
     elapsedTime: 0,
@@ -22,15 +22,15 @@ export const useTimer = () => {
 
       // Capture screenshot every minute
       screenshotIntervalRef.current = setInterval(async () => {
-        if (timer.projectId) {
+        if (timer.taskId) {
           try {
-            await apiService.captureScreenshot(timer.projectId);
+            await apiService.captureScreenshot(timer.taskId);
             console.log('Screenshot captured');
           } catch (error) {
             console.error('Failed to capture screenshot:', error);
           }
         }
-      }, 60000); // 60 seconds
+      }, 10000); // 10 seconds
 
       return () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
@@ -40,39 +40,36 @@ export const useTimer = () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (screenshotIntervalRef.current) clearInterval(screenshotIntervalRef.current);
     }
-  }, [timer.isRunning, timer.startTime, timer.projectId]);
+  }, [timer.isRunning, timer.startTime, timer.taskId]);
 
-  const startTimer = async (projectId: string) => {
+  const startTimer = async (taskId: string, userId: string) => {
     try {
-      const response = await apiService.startTimer(projectId);
-      if (response.success) {
-        const startTime = new Date();
+      const response = await apiService.startTimer(taskId, userId);
+      const startTime = new Date();
         setTimer({
-          projectId,
+          taskId,
           isRunning: true,
           startTime,
           elapsedTime: 0,
         });
-      }
+      return response;
     } catch (error) {
       console.error('Failed to start timer:', error);
     }
   };
 
-  const stopTimer = async () => {
-    if (!timer.projectId || !timer.isRunning) return;
+  const stopTimer = async (taskId: string, userId: string) => {
+    if (!timer.taskId || !timer.isRunning) return;
 
     try {
-      const response = await apiService.stopTimer(timer.projectId, timer.elapsedTime);
-      if (response.success) {
-        setTimer({
-          projectId: null,
-          isRunning: false,
-          startTime: null,
-          elapsedTime: 0,
-        });
-        return response.data;
-      }
+      const response = await apiService.stopTimer(taskId, userId);
+      setTimer({
+        taskId: null,
+        isRunning: false,
+        startTime: null,
+        elapsedTime: 0,
+      });
+      return response;
     } catch (error) {
       console.error('Failed to stop timer:', error);
     }

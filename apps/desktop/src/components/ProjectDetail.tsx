@@ -4,6 +4,7 @@ import { Project, TimeEntry } from '../types';
 import { apiService } from '../services/api';
 import { useTimer } from '../hooks/useTimer';
 import { formatTime } from '../utils/time';
+import * as moment from 'moment';
 
 interface ProjectDetailProps {
   project: Project;
@@ -23,10 +24,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   const fetchTimeEntries = async () => {
     setLoading(true);
     try {
-      const response = await apiService.getProjectTimeEntries(project.id);
-      if (response.success) {
-        setTimeEntries(response.data);
-      }
+      const response = await apiService.getProjectTimeEntries(project.id, project.employeeId);
+      setTimeEntries(response);
     } catch (error) {
       console.error('Failed to fetch time entries:', error);
     } finally {
@@ -35,22 +34,19 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   };
 
   const handleTimerToggle = async () => {
-    if (timer.isRunning && timer.projectId === project.id) {
-      const newEntry = await stopTimer();
+    if (timer.isRunning && timer.taskId === project.tasks[0].id) {
+      const newEntry = await stopTimer(project.tasks[0].id, project.employeeId);
       if (newEntry) {
         setTimeEntries(prev => [newEntry, ...prev]);
       }
     } else {
-      await startTimer(project.id);
+      await startTimer(project.tasks[0].id, project.employeeId);
     }
   };
 
-  const isCurrentProjectRunning = timer.isRunning && timer.projectId === project.id;
+  const isCurrentProjectRunning = timer.isRunning && timer.taskId === project.tasks[0].id;
 
-  const filteredEntries = timeEntries.filter(entry =>
-    entry.duration.includes(searchTerm) || 
-    entry.date.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEntries = timeEntries;
 
   const formatLastSync = (date: Date) => {
     return date.toLocaleString('en-US', {
@@ -82,7 +78,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{project.name}</h1>
           <div className="flex items-center justify-between">
-            <p className="text-gray-600 font-medium">{project.weeklyTarget}</p>
+            <p className="text-gray-600 font-medium">{40}</p>
             <div className="flex items-center space-x-3">
               {isCurrentProjectRunning && (
                 <div className="flex items-center space-x-2 text-green-600">
@@ -143,13 +139,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-gray-900 text-lg">
-                      {entry.startTime} - {entry.endTime}
+                      {formatLastSync(new Date(entry.startTime))} - {formatLastSync(new Date(entry.endTime))}
                     </p>
-                    <p className="text-gray-600 mt-1">{entry.date}</p>
+                    <p className="text-gray-600 mt-1">{entry.startTime}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <span className="font-mono text-2xl font-bold text-indigo-600">
-                      {entry.duration}
+                      {moment(new Date(entry.endTime) - new Date(entry.startTime)).format('HH:mm')}
                     </span>
                     <div className="p-2 bg-green-100 rounded-lg">
                       <Check className="h-5 w-5 text-green-600" />

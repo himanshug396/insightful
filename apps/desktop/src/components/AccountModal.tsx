@@ -31,10 +31,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ user, onClose }) => {
         {/* User Info */}
         <div className="p-6 text-center">
           <div className="w-24 h-24 bg-green-400 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-            {user.avatar}
+            {user.email[0].toString()}
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">{user.name}</h3>
-          <p className="text-gray-600 mb-6">{user.email}</p>
+          <p className="text-gray-600 mb-6 text-sm">{user.email}</p>
 
           {/* Companies Section */}
           <div className="text-left">
@@ -42,7 +42,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ user, onClose }) => {
               Companies
             </h4>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <span className="font-medium text-gray-800">{user.company}</span>
+              <span className="font-medium text-gray-800">{"MERCOR"}</span>
               <div className="p-1 bg-indigo-100 rounded-lg">
                 <Check className="h-4 w-4 text-indigo-600" />
               </div>
@@ -58,7 +58,6 @@ const AccountModal: React.FC<AccountModalProps> = ({ user, onClose }) => {
           >
             Sign out
           </button>
-          <span className="text-sm text-gray-500">Version: 7.5.1</span>
         </div>
       </div>
     </div>
