@@ -4,7 +4,6 @@ import { Project, TimeEntry } from '../types';
 import { apiService } from '../services/api';
 import { useTimer } from '../hooks/useTimer';
 import { formatTime } from '../utils/time';
-import * as moment from 'moment';
 
 interface ProjectDetailProps {
   project: Project;
@@ -34,17 +33,18 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   };
 
   const handleTimerToggle = async () => {
-    if (timer.isRunning && timer.taskId === project.tasks[0].id) {
-      const newEntry = await stopTimer(project.tasks[0].id, project.employeeId);
+    if (timer.isRunning && timer.taskId === project.task.id) {
+      const newEntry = await stopTimer(project.task.id, project.employeeId);
       if (newEntry) {
-        setTimeEntries(prev => [newEntry, ...prev]);
+        const response = await apiService.getProjectTimeEntries(project.id, project.employeeId);
+        setTimeEntries(response);
       }
     } else {
-      await startTimer(project.tasks[0].id, project.employeeId);
+      await startTimer(project.task.id, project.employeeId);
     }
   };
 
-  const isCurrentProjectRunning = timer.isRunning && timer.taskId === project.tasks[0].id;
+  const isCurrentProjectRunning = timer.isRunning && timer.taskId === project.task.id;
 
   const filteredEntries = timeEntries;
 
@@ -141,11 +141,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                     <p className="font-semibold text-gray-900 text-lg">
                       {formatLastSync(new Date(entry.startTime))} - {formatLastSync(new Date(entry.endTime))}
                     </p>
-                    <p className="text-gray-600 mt-1">{entry.startTime}</p>
+                    <p className="text-gray-600 mt-1">{formatLastSync((new Date(entry.startTime)))}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <span className="font-mono text-2xl font-bold text-indigo-600">
-                      {moment(new Date(entry.endTime) - new Date(entry.startTime)).format('HH:mm')}
+                      {entry.duration}
                     </span>
                     <div className="p-2 bg-green-100 rounded-lg">
                       <Check className="h-5 w-5 text-green-600" />
