@@ -7,6 +7,7 @@ import { Project, User } from './types';
 import { apiService } from './services/api';
 
 function App() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [currentView, setCurrentView] = useState<'projects' | 'detail'>('projects');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -20,12 +21,27 @@ function App() {
 
   const fetchUser = async () => {
     try {
-      const response = await apiService.getCurrentUser();
-      if (response.success) {
-        setUser(response.data);
-      }
+      const token = await apiService.login();
+      console.log("🚀 ~ fetchUser ~ token:", token)
+      const userResponse = await apiService.getCurrentUser();
+      console.log("🚀 ~ fetchUser ~ userResponse:", userResponse)
+      localStorage.setItem("userId", userResponse.userId);
+      setUser(userResponse);
+      await fetchProjects(userResponse.userId);
     } catch (error) {
       console.error('Failed to fetch user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProjects = async (userId: string) => {
+    setLoading(true);
+    try {
+      const response = await apiService.getAssignedProjects(userId);
+      setProjects(response);
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
     } finally {
       setLoading(false);
     }
@@ -64,10 +80,10 @@ function App() {
       <WindowHeader user={user} />
       <div className="flex-1" style={{ zoom: "70%", paddingBottom: "200px"}}>
         {currentView === 'projects' ? (
-          <ProjectsList onProjectSelect={handleProjectSelect} />
+          <ProjectsList projects={projects} onProjectSelect={handleProjectSelect} />
         ) : selectedProject ? (
           <ProjectDetail 
-            project={selectedProject} 
+            project={selectedProject}
             onBack={handleBackToProjects} 
           />
         ) : null}

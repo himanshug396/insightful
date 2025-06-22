@@ -1,46 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, ChevronRight, Clock } from 'lucide-react';
 import { Project } from '../types';
-import { apiService } from '../services/api';
 
 interface ProjectsListProps {
+  projects: Project[];
   onProjectSelect: (project: Project) => void;
 }
 
-const ProjectsList: React.FC<ProjectsListProps> = ({ onProjectSelect }) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+const ProjectsList: React.FC<ProjectsListProps> = ({ projects, onProjectSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
-    setLoading(true);
-    try {
-      const response = await apiService.getAssignedProjects();
-      if (response.success) {
-        setProjects(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filteredProjects = projects.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -71,9 +42,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ onProjectSelect }) => {
                   <div className="flex items-center space-x-4">
                     <div
                       className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg"
-                      style={{ backgroundColor: project.color }}
+                      style={{ backgroundColor: "aqua" }}
                     >
-                      {project.avatar}
+                      {project.name[0]}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -90,7 +61,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ onProjectSelect }) => {
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
                       <span className="text-indigo-600 font-medium text-sm">
-                        {project.taskCount} TASK{project.taskCount !== 1 ? 'S' : ''}
+                        {project.tasks.length} TASK{project.tasks.length !== 1 ? 'S' : ''}
                       </span>
                     </div>
                     <ChevronRight className="h-5 w-5 text-gray-400" />
