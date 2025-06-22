@@ -10,3 +10,4 @@ export const EMPLOYEE_PROJECTS = (id: string) => `employees/${id}/projects`
 export const START_TIME = `timelogs/start`
 export const STOP_TIME = `timelogs/stop`
 export const GET_TIME_LOG = (userId: string, projectId: string) => `timelogs/${projectId}/${userId}`
+export const SCREENSHOT = `screenshots`

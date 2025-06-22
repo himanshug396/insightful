@@ -1,5 +1,12 @@
-import { contextBridge, ipcRenderer } from "electron";
+const { contextBridge, desktopCapturer } = require("electron");
+console.log("🔌 available electron keys:", Object.keys({ contextBridge, desktopCapturer }));
+console.log("🔌 preload loaded — desktopCapturer is", !!desktopCapturer);
 contextBridge.exposeInMainWorld("electronAPI", {
-  send: (channel, data) => ipcRenderer.send(channel, data),
-  on: (channel, fn) => ipcRenderer.on(channel, (_e, ...args) => fn(...args))
+  captureScreen: async () => {
+    const sources = await desktopCapturer.getSources({ types: ["screen"] });
+    if (!sources.length) {
+      throw new Error("No screen sources found");
+    }
+    return sources[0].thumbnail.toPNG().buffer;
+  }
 });

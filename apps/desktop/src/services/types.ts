@@ -1,0 +1,1 @@
+export type File = { uri: string; fileName: string; mimeType: string; size?: number }

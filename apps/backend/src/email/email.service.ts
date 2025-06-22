@@ -12,7 +12,7 @@ export class EmailService {
       template: 'offer',    // corresponds to offer.hbs
       context: {
         name: name,
-        buttonURL: `${process.env.WEBAPP_URL}/?token:${code}`,
+        buttonURL: `${process.env.WEBAPP_URL}/?token=${code}`,
         supportEmail: 'support@example.com',
       },
     });

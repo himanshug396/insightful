@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "package": "electron-builder --dir",
-    "build:main": "electron-builder"
+    "build:main": "electron-builder",
+    "dev:electron": "concurrently \"npm run dev\" \"npm run start\""
   },
   "build": {
     "appId": "com.mercor.insightful",
@@ -45,7 +46,6 @@
     "@tanstack/react-query": "^5.81.2",
     "axios": "^1.10.0",
     "convict": "^6.2.4",
-    "electron": "^26.0.0",
     "electron-builder": "^24.0.0",
     "lucide-react": "^0.344.0",
     "moment": "^2.30.1",
@@ -59,6 +59,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitejs/plugin-vue": "^5.2.4",
     "autoprefixer": "^10.4.18",
+    "concurrently": "^9.2.0",
     "electron": "^36.5.0",
     "electron-packager": "^17.1.2",
     "eslint": "^9.9.1",
