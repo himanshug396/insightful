@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Timer } from '../types';
 import { apiService } from '../services/api';
 
-export const useTimer = () => {
+export const useTimer = (taskId: string, employeeId: string) => {
   const [timer, setTimer] = useState<Timer>({
     taskId: null,
     isRunning: false,
@@ -14,6 +14,8 @@ export const useTimer = () => {
   const screenshotIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    console.log("🚀 ~ useEffect ~ timer:", timer)
+    console.log('isElectron?', !!(window && (window as any).electronAPI));
     if (timer.isRunning && timer.startTime) {
       intervalRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - timer.startTime!.getTime()) / 1000);
@@ -22,13 +24,22 @@ export const useTimer = () => {
 
       // Capture screenshot every minute
       screenshotIntervalRef.current = setInterval(async () => {
-        if (timer.taskId) {
-          try {
-            await apiService.captureScreenshot(timer.taskId);
-            console.log('Screenshot captured');
-          } catch (error) {
-            console.error('Failed to capture screenshot:', error);
+        try {
+          if (!(window as any).electronAPI?.captureScreen) {
+            console.warn('⚠️ electronAPI not available – skipping screenshot');
+            return;
           }
+          const pngBuffer: ArrayBuffer = await window.electronAPI.captureScreen();
+          const file = new File(
+            [pngBuffer],
+            `screenshot_${Date.now()}.png`,
+            { type: 'image/png' }
+          );
+          console.log("🚀 ~ screenshotIntervalRef.current=setInterval ~ file:", file)
+          await apiService.captureScreenshot(taskId, employeeId, file);
+          console.log('Screenshot captured');
+        } catch (error) {
+          console.error('Failed to capture screenshot:', error);
         }
       }, 10000); // 10 seconds
 
@@ -44,15 +55,14 @@ export const useTimer = () => {
 
   const startTimer = async (taskId: string, userId: string) => {
     try {
-      const response = await apiService.startTimer(taskId, userId);
+      await apiService.startTimer(taskId, userId);
       const startTime = new Date();
-        setTimer({
-          taskId,
-          isRunning: true,
-          startTime,
-          elapsedTime: 0,
-        });
-      return response;
+      setTimer({
+        taskId,
+        isRunning: true,
+        startTime,
+        elapsedTime: 0,
+      });
     } catch (error) {
       console.error('Failed to start timer:', error);
     }

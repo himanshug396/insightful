@@ -14,7 +14,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-  const { timer, startTimer, stopTimer } = useTimer();
+  const { timer, startTimer, stopTimer } = useTimer(project.task.id, project.employeeId);
 
   useEffect(() => {
     fetchTimeEntries();
