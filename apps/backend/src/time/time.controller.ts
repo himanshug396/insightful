@@ -11,12 +11,12 @@ export class TimeController {
   }
 
   @Post('stop')
-  async stopLog(@Body() body: { employeeId: string }) {
-    return this.timeService.stopLog(body.employeeId);
+  async stopLog(@Body() body: { employeeId: string; taskId: string }) {
+    return this.timeService.stopLog(body.employeeId, body.taskId);
   }
 
-  @Get(':employeeId')
-  async getLogs(@Param('employeeId') id: string) {
-    return this.timeService.getLogsForEmployee(id);
+  @Get(':projectId/:employeeId')
+  async getLogs(@Param('projectId') projectId: string, @Param('employeeId') employeeId: string) {
+    return this.timeService.getLogsForEmployee(projectId, employeeId);
   }
 }

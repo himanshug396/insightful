@@ -38,14 +38,22 @@ async function main() {
     },
   });
 
-  await prisma.task.create({
+  const task = await prisma.task.create({
     data: {
       name: 'Default Task',
       projectId: project.id,
-      employees: {
-        connect: [{ id: john.id }, { id: jane.id }],
-      },
     },
+  });
+
+  const start = new Date();
+  start.setHours(0);
+  await prisma.timeLog.create({
+    data: {
+      startTime: start,
+      endTime: new Date(),
+      taskId: task.id,
+      employeeId: john.id,
+    }
   });
 }
 

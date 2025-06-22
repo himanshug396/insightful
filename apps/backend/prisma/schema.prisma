@@ -18,9 +18,8 @@ model Employee {
 
   activationToken String? @unique
 
-  projects  Project[] @relation("ProjectEmployees")
-  tasks     Task[]    @relation("TaskEmployees")
-  times     TimeLog[]
+  projects    Project[]    @relation("ProjectEmployees")
+  times       TimeLog[]
   screenshots Screenshot[]
 }
 
@@ -28,23 +27,24 @@ model Project {
   id        String     @id @default(uuid())
   name      String
   employees Employee[] @relation("ProjectEmployees")
-  tasks     Task[]
+  task      Task[]
 }
 
 model Task {
-  id        String     @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  project   Project    @relation(fields: [projectId], references: [id])
+  project   Project   @relation(fields: [projectId], references: [id])
   projectId String
-  employees Employee[] @relation("TaskEmployees")
   times     TimeLog[]
+
+  Screenshot Screenshot[]
 }
 
 model TimeLog {
-  id         String   @id @default(uuid())
-  employee   Employee @relation(fields: [employeeId], references: [id])
+  id         String    @id @default(uuid())
+  employee   Employee  @relation(fields: [employeeId], references: [id])
   employeeId String
-  task       Task     @relation(fields: [taskId], references: [id])
+  task       Task      @relation(fields: [taskId], references: [id])
   taskId     String
   startTime  DateTime
   endTime    DateTime?
@@ -52,9 +52,10 @@ model TimeLog {
 
 model Screenshot {
   id         String   @id @default(uuid())
-  employee   Employee @relation(fields: [employeeId], references: [id])
-  employeeId String
   takenAt    DateTime
-  imageUrl   String
-  permission Boolean
+  fileName   String
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  employeeId String
+  task       Task      @relation(fields: [taskId], references: [id])
+  taskId     String
 }

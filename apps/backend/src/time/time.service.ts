@@ -10,18 +10,19 @@ export class TimeService {
       data: {
         employeeId,
         taskId,
-        startTime: new Date()
-      }
+        startTime: new Date(),
+      },
     });
   }
 
-  async stopLog(employeeId: string) {
+  async stopLog(employeeId: string, taskId: string) {
     const activeLog = await this.prisma.timeLog.findFirst({
       where: {
         employeeId,
-        endTime: null
+        taskId,
+        endTime: null,
       },
-      orderBy: { startTime: 'desc' }
+      orderBy: { startTime: 'desc' },
     });
 
     if (!activeLog) {
@@ -30,14 +31,38 @@ export class TimeService {
 
     return this.prisma.timeLog.update({
       where: { id: activeLog.id },
-      data: { endTime: new Date() }
+      data: { endTime: new Date() },
     });
   }
 
-  async getLogsForEmployee(employeeId: string) {
+  async getLogsForEmployee(projectId: string, employeeId: string) {
     return this.prisma.timeLog.findMany({
-      where: { employeeId },
-      include: { task: true }
+      where: { employeeId, task: { projectId: projectId } },
+      orderBy: {
+        startTime: 'desc',
+      },
     });
+  }
+
+  async getTimeForProject(employeeId: string) {
+    const logs = await this.prisma.timeLog.findMany({
+      where: { employeeId, endTime: { not: null } },
+      include: {
+        task: {
+          select: { projectId: true },
+        },
+      },
+    });
+    const projectTotalTimeMap: Map<string, number> = new Map<string, number>();
+    logs.map((log) => {
+      if (log.task.projectId) {
+        if (!projectTotalTimeMap[log.task.projectId]) {
+          projectTotalTimeMap[log.task.projectId] = 0;
+        }
+        projectTotalTimeMap[log.task.projectId] +=
+          Number(log.endTime) - Number(log.startTime);
+      }
+    });
+    return projectTotalTimeMap;
   }
 }

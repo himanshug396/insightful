@@ -8,18 +8,14 @@ export class TaskService {
   getTasksByProject(projectId: string) {
     return this.prisma.task.findMany({
       where: { projectId },
-      include: { employees: true }
     });
   }
 
-  createTask(projectId: string, name: string, employeeIds: string[]) {
+  createTask(projectId: string, name: string) {
     return this.prisma.task.create({
       data: {
         name,
         project: { connect: { id: projectId } },
-        employees: {
-          connect: employeeIds.map(id => ({ id }))
-        }
       }
     });
   }

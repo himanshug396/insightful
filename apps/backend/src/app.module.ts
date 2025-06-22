@@ -12,6 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import { EmailModule } from './email/email.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 
 @Module({
@@ -42,6 +43,9 @@ import { EmailModule } from './email/email.module';
         adapter: new HandlebarsAdapter(),   // or EjsAdapter, PugAdapter…
         options: { strict: true },
       },
+    }),
+    MulterModule.register({
+      dest: join(__dirname, 'uploads'),
     }),
   ],
   controllers: [AppController],
