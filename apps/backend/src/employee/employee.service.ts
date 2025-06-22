@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class EmployeeService {
@@ -10,9 +11,19 @@ export class EmployeeService {
     return this.prisma.employee.findMany();
   }
 
-  async activateEmployee(token: string, password: string) {
+  async addEmployee(dto: { name: string; email: string }) {
+    return this.prisma.employee.create({
+      data: {
+        name: dto.name,
+        email: dto.email,
+        activationToken: randomUUID(),
+      }
+    });
+  }
+
+  async activateEmployee(token: string, email: string, password: string) {
     const employee = await this.prisma.employee.findFirst({
-      where: { activationToken: token }
+      where: { activationToken: token, email: email }
     });
 
     if (!employee) throw new Error('Invalid token');
