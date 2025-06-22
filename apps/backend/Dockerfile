@@ -28,6 +28,8 @@ RUN npm install -g @nestjs/cli
 # Copy app dependencies and install them
 COPY package.json ./
 COPY --chown=node:node prisma ./prisma/
+COPY  --chown=node:node src/templates/offer.hbs ./dist/src/templates/offer.hbs
+# RUN cat ./dist/src/templates/offer.hbs
 RUN npm install --frozen-lockfile
 RUN npx prisma generate
 # Copy the rest of your app

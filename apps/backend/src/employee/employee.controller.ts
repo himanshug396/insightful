@@ -10,8 +10,16 @@ export class EmployeeController {
     return this.employeeService.getAllEmployees();
   }
 
+  @Post('')
+  async addNewEmployee(@Body() body: {
+    name: string;
+    email: string;
+  }) {
+    return this.employeeService.addEmployee(body);
+  }
+
   @Post('activate')
-  async activate(@Body() body: { token: string; password: string }) {
-    return this.employeeService.activateEmployee(body.token, body.password);
+  async activate(@Body() body: { token: string; email: string; password: string }) {
+    return this.employeeService.activateEmployee(body.token, body.email, body.password);
   }
 }
