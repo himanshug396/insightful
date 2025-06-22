@@ -61,7 +61,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projects, onProjectSelect }
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
                       <span className="text-indigo-600 font-medium text-sm">
-                        {project.tasks.length} TASK{project.tasks.length !== 1 ? 'S' : ''}
+                        TASK
                       </span>
                     </div>
                     <ChevronRight className="h-5 w-5 text-gray-400" />

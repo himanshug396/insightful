@@ -3,7 +3,7 @@ export interface Project {
   employeeId: string;
   name: string;
   totalTime: number;
-  tasks: Task[];
+  task: Task;
 }
 
 export interface Task {
@@ -17,6 +17,7 @@ export interface TimeEntry {
   employeeId: string;
   startTime: string;
   endTime: string;
+  duration: string;
 }
 
 export interface Timer {
