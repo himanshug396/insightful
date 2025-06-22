@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BACKEND_URL, DESKTOP_APP_URL } from '../constants';
 
 export function CreateAccountForm({ token }: { token: string }) {
   const [email, setEmail] = useState('');
@@ -12,16 +13,17 @@ export function CreateAccountForm({ token }: { token: string }) {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3000/employees/activate', {
+      const res = await fetch(`${BACKEND_URL}/employees/activate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ email, token, password }),
       });
 
       if (!res.ok) throw new Error('Activation failed');
 
       // Auto-download desktop app
-      window.location.href = '/download/Insightful-Client.dmg';
+      window.location.href = `/${DESKTOP_APP_URL}`;
+      window.location.href = `/`;
     } catch {
       setError('Something went wrong');
     } finally {

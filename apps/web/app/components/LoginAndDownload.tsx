@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BACKEND_URL, DESKTOP_APP_URL } from '../constants';
 
 export function LoginAndDownload() {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ export function LoginAndDownload() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3000/auth/login', {
+      const res = await fetch(`${BACKEND_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -21,7 +22,8 @@ export function LoginAndDownload() {
 
       setSuccess(true);
       console.log(success);
-      window.location.href = '/download/Insightful-Client.dmg';
+      window.location.href = `/${DESKTOP_APP_URL}`;
+      window.location.href = `/`;
     } catch {
       setError('Something went wrong');
     }
