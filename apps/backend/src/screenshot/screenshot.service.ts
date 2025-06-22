@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ScreenshotService {
@@ -12,11 +11,10 @@ export class ScreenshotService {
     taskId: string,
     file: Express.Multer.File,
   ) {
-    const filename = randomUUID();
-    return this.prisma.screenshot.create({
+    return await this.prisma.screenshot.create({
       data: {
         employeeId,
-        fileName: filename,
+        fileName: file.path,
         taskId: taskId,
         takenAt: new Date()
       }

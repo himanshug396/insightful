@@ -45,7 +45,7 @@ import { MulterModule } from '@nestjs/platform-express';
       },
     }),
     MulterModule.register({
-      dest: join(__dirname, 'uploads'),
+      dest: join(__dirname, '..', 'uploads'),
     }),
   ],
   controllers: [AppController],

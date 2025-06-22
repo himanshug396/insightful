@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class TimeService {
@@ -36,11 +37,24 @@ export class TimeService {
   }
 
   async getLogsForEmployee(projectId: string, employeeId: string) {
-    return this.prisma.timeLog.findMany({
+    const logs = await this.prisma.timeLog.findMany({
       where: { employeeId, task: { projectId: projectId } },
       orderBy: {
         startTime: 'desc',
       },
+    });
+
+    return logs.map((log) => {
+      return {
+        id: log.id,
+        employeeId: log.employeeId,
+        startTime: log.startTime,
+        endTime: log.endTime,
+        taskId: log.taskId,
+        duration: log.endTime
+          ? moment(Number(log.endTime) - Number(log.startTime)).format('HH:mm:ss')
+          : '-',
+      };
     });
   }
 
