@@ -4,7 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors({
+    origin: true, // or '*'
+  });
   const config = new DocumentBuilder()
     .setTitle('Insightful MVP API')
     .setDescription('REST APIs compatible with Insightful contract')

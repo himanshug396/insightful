@@ -33,7 +33,6 @@ export class EmployeeService {
       where: { id: employee.id },
       data: {
         password: hashed,
-        activationToken: null,
         active: true
       }
     });
