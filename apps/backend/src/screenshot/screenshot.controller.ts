@@ -1,20 +1,33 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UploadedFile,
+} from '@nestjs/common';
 import { ScreenshotService } from './screenshot.service';
+import { UseFileInterceptor } from './interceptor';
 
 @Controller('screenshots')
 export class ScreenshotController {
   constructor(private readonly screenshotService: ScreenshotService) {}
 
-  @Post()
-  async upload(@Body() body: {
-    employeeId: string;
-    imageUrl: string;
-    permission: boolean;
-  }) {
-    return this.screenshotService.uploadScreenshot(
+  @Post('')
+  @UseFileInterceptor('file')
+  async uploadPoaFile(
+    @UploadedFile()
+    file: Express.Multer.File,
+    @Body()
+    body: {
+      employeeId: string;
+      taskId: string;
+    },
+  ) {
+    return await this.screenshotService.uploadScreenshot(
       body.employeeId,
-      body.imageUrl,
-      body.permission
+      body.taskId,
+      file,
     );
   }
 

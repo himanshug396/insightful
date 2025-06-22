@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ScreenshotService {
   constructor(private prisma: PrismaService) {}
 
+  
   async uploadScreenshot(
     employeeId: string,
-    imageUrl: string,
-    permission: boolean
+    taskId: string,
+    file: Express.Multer.File,
   ) {
+    const filename = randomUUID();
     return this.prisma.screenshot.create({
       data: {
         employeeId,
-        imageUrl,
-        permission,
+        fileName: filename,
+        taskId: taskId,
         takenAt: new Date()
       }
     });

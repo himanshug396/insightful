@@ -13,8 +13,8 @@ export class TaskController {
   @Post()
   async create(
     @Param('projectId') projectId: string,
-    @Body() body: { name: string; employeeIds: string[] }
+    @Body() body: { name: string }
   ) {
-    return this.taskService.createTask(projectId, body.name, body.employeeIds);
+    return this.taskService.createTask(projectId, body.name);
   }
 }
